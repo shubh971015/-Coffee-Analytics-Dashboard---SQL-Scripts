@@ -206,6 +206,228 @@ BEGIN
 END$$
 DELIMITER ;
 ```
+# Coffee Sales Analysis Project
+
+## Project Overview
+This project involves analyzing sales data for a coffee chain. The analysis includes various SQL queries to gain insights into sales performance, customer buying patterns, and store performance. The project is implemented using MySQL.
+
+## Getting Started
+
+### Prerequisites
+- MySQL Server
+- MySQL Workbench or any other MySQL client
+
+### Setup
+
+1. **Create and Use the Database:**
+    ```sql
+    CREATE DATABASE coffee_chain;
+    USE coffee_chain;
+    ```
+
+2. **Create Tables:**
+    ```sql
+    CREATE TABLE coffee (
+        Area INT,
+        Date DATE,
+        Product VARCHAR(30),
+        Product_Line VARCHAR(30),
+        Product_Type VARCHAR(30),
+        State VARCHAR(30),
+        Territory VARCHAR(30),
+        Type VARCHAR(30),
+        Budget_Profit INT,
+        Budget_Sales INT,
+        Marketing INT,
+        Profit INT,
+        Sales INT,
+        Total_Expenses INT
+    );
+    ```
+
+3. **Load Data:**
+    ```sql
+    LOAD DATA INFILE 'E:\\ccc.csv'
+    INTO TABLE coffee
+    FIELDS TERMINATED BY ','
+    ENCLOSED BY '"'
+    IGNORE 1 ROWS;
+    
+    DESCRIBE coffee;
+    ```
+
+4. **Verify Data Load:**
+    ```sql
+    SELECT * FROM coffee_chain.coffee;
+    ```
+
+## Analysis Queries
+
+### 1. Top 10 Areas by Total Sales of Espresso Products
+```sql
+SELECT area, SUM(sales) AS area_wise_sales, product_type 
+FROM coffee
+WHERE product_type = 'Espresso'
+GROUP BY area
+ORDER BY area_wise_sales DESC
+LIMIT 10;
+```
+
+### 2. State in the East Market with the Lowest Profit for Espresso
+```sql
+SELECT area, state, product_type, Territory, SUM(profit) AS Total_profit
+FROM coffee
+WHERE product_type = 'Espresso' AND Territory = 'east'
+GROUP BY area, Territory
+ORDER BY Total_profit ASC
+LIMIT 1;
+```
+
+### 3. Monthly Sales of Decaf Products Exceeding $30,000
+```sql
+SELECT area, type,
+       EXTRACT(MONTH FROM Date) AS month_no,
+       EXTRACT(YEAR FROM Date) AS year_no,
+       SUM(sales) AS month_sales
+FROM coffee
+WHERE type = 'decaf'
+GROUP BY month_no, year_no
+HAVING month_sales > 30000
+ORDER BY month_no, year_no;
+```
+
+### 4. State with the Highest Profit in the West Market in 2013
+```sql
+SELECT EXTRACT(YEAR FROM Date) AS year_no,
+       state,
+       SUM(profit) AS sum_profit,
+       territory
+FROM coffee
+WHERE territory = 'west' AND EXTRACT(YEAR FROM Date) = 2013
+GROUP BY state
+ORDER BY sum_profit DESC;
+```
+
+### 5. Percentage (Expenses / Sales) of the State with the Lowest Profit
+```sql
+SELECT state, SUM(Total_Expenses), SUM(sales),
+       CONCAT(ROUND((SUM(Total_Expenses) / SUM(sales)) * 100, 2), '%') AS percent_sales
+FROM coffee
+GROUP BY state
+ORDER BY percent_sales ASC
+LIMIT 5;
+```
+
+### 6. Highest Selling Product and State Combination
+```sql
+SELECT CONCAT(product_type, ' ', state) AS product_state_combined,
+       SUM(sales) 
+FROM coffee
+GROUP BY product_type, state
+ORDER BY SUM(sales) DESC 
+LIMIT 3;
+```
+
+### 7. Contribution of Tea to the Overall Profit in 2012
+```sql
+SELECT CONCAT(ROUND(SUM(CASE WHEN product_type = 'tea' THEN profit ELSE 0 END) / SUM(profit) * 100, 2), '%') AS tea_contribution_percentage
+FROM coffee
+WHERE EXTRACT(YEAR FROM Date) = 2012;
+```
+
+### 8. Average % Profit / Sales for Products Starting with 'C'
+```sql
+SELECT CONCAT(ROUND(AVG(profit / sales) * 100, 2), '%') AS avg_profit_sales 
+FROM coffee
+WHERE product_type LIKE 'c%';
+```
+
+### 9. Distinct Count of Area Codes for the State with the Lowest Budget Margin in Small Market
+```sql
+SELECT state, COUNT(DISTINCT area) 
+FROM coffee
+GROUP BY state
+ORDER BY COUNT(DISTINCT area) ASC
+LIMIT 1;
+```
+
+### 10. Product Type without any Product in Top 5 Products by Sales
+```sql
+WITH ranked_products AS (
+    SELECT Product_Type,
+           ROW_NUMBER() OVER (PARTITION BY Product_Type ORDER BY SUM(Sales) DESC) AS row_num
+    FROM coffee
+    GROUP BY Product_Type
+)
+SELECT Product_Type
+FROM ranked_products
+WHERE row_num >= 5;
+```
+
+### 11. Top 5 Products by Sales for Each State
+```sql
+WITH ranked_products AS (
+    SELECT Product,
+           State,
+           Sales,
+           ROW_NUMBER() OVER (PARTITION BY State ORDER BY Sales DESC) AS row_num
+    FROM coffee
+)
+SELECT State, Product, Sales
+FROM ranked_products
+WHERE row_num <= 5;
+```
+
+### 12. Top-Selling Products by Total Sales Revenue
+```sql
+SELECT product_type, SUM(sales) 
+FROM coffee
+GROUP BY product_type
+ORDER BY SUM(sales) DESC
+LIMIT 1;
+```
+
+### 13. Seasonal Trends in Sales Volume or Profit Margins
+```sql
+SELECT EXTRACT(MONTH FROM Date) AS month,
+       EXTRACT(YEAR FROM Date) AS year,
+       AVG(sales) AS avg_sales
+FROM coffee
+GROUP BY month
+ORDER BY year, avg_sales ASC;
+```
+
+### 14. Profitability Across Different States or Territories
+```sql
+SELECT state, territory,
+       EXTRACT(YEAR FROM Date) AS year,
+       SUM(profit) 
+FROM coffee
+GROUP BY state, year
+ORDER BY SUM(profit) DESC
+LIMIT 5;
+```
+
+### 15. Average Profit Margin for Each Product Type
+```sql
+SELECT product_type, 
+       AVG(profit / sales) * 100 AS avg_profit_margin
+FROM coffee
+GROUP BY product_type;
+```
+
+### 16. Identify Underperforming Products
+```sql
+SELECT product_type, 
+       AVG(sales) AS avg_sales, 
+       AVG(profit) AS avg_profit
+FROM coffee
+GROUP BY product_type
+HAVING avg_sales < (SELECT AVG(sales) FROM coffee) 
+   AND avg_profit < (SELECT AVG(profit) FROM coffee);
+```
+
+
 
 ## 📝 Documentation Standards
 
