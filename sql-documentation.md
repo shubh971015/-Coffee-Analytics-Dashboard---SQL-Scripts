@@ -1,11 +1,5 @@
 # ☕ Coffee Chain Analytics - SQL Documentation
 
-<div align="center">
-
-![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![Documentation](https://img.shields.io/badge/Documentation-Complete-success?style=for-the-badge)
-
-</div>
 
 ## 📑 Table of Contents
 - [Database Setup](#database-setup)
