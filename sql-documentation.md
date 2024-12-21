@@ -1,6 +1,16 @@
 # ☕ Coffee Chain Analytics - SQL Documentation
 
+# Coffee Sales Analysis Project
 
+## Project Overview
+This project involves analyzing sales data for a coffee chain. The analysis includes various SQL queries to gain insights into sales performance, customer buying patterns, and store performance. The project is implemented using MySQL.
+
+## Getting Started
+
+### Prerequisites
+- MySQL Server
+- MySQL Workbench
+- 
 ## 📑 Table of Contents
 - [Database Setup](#database-setup)
 - [Data Preparation](#data-preparation)
@@ -200,16 +210,7 @@ BEGIN
 END$$
 DELIMITER ;
 ```
-# Coffee Sales Analysis Project
 
-## Project Overview
-This project involves analyzing sales data for a coffee chain. The analysis includes various SQL queries to gain insights into sales performance, customer buying patterns, and store performance. The project is implemented using MySQL.
-
-## Getting Started
-
-### Prerequisites
-- MySQL Server
-- MySQL Workbench or any other MySQL client
 
 ### Setup
 
@@ -428,8 +429,7 @@ HAVING avg_sales < (SELECT AVG(sales) FROM coffee)
 1. **Query Storage**: All SQL queries are saved for reference
 2. **Collaboration**: Documentation ensures smooth team collaboration
 3. **Results Capture**: Query results and screenshots are stored
-4. **Client Requirements**: Documentation maintained for client proof requests
-5. **Standards Compliance**: Follow project/company documentation standards
+4. **Standards Compliance**: Follow project/company documentation standards
 
 ---
 <div align="center">
